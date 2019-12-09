@@ -51,6 +51,9 @@
     <ClInclude Include="TabuSearch.h">
       <Filter>Header Files\Algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="SimulatedAnnealing.h">
+      <Filter>Header Files\Algorithm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TabuSearch.cpp">
+      <Filter>Source Files\Algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="SimulatedAnnealing.cpp">
       <Filter>Source Files\Algorithm</Filter>
     </ClCompile>
   </ItemGroup>

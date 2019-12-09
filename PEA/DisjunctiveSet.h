@@ -24,7 +24,7 @@ public:
 	long long findSet(long long vertexv);
 
 	void makeSet(long long vertex);
-	void unionSets(unsigned int start, unsigned int end);
+	void unionSets(unsigned long long start, unsigned long long end);
 
 	~DisjunctiveSet() { if (set) delete[] set; }
 };

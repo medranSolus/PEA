@@ -1,25 +1,30 @@
 #pragma once
 #include <memory>
 #include <bitset>
+#include <random>
 
 namespace Algorithm
 {
+	typedef std::pair<unsigned long long, unsigned long long> Pair;
+
 	struct PermutationSeed
 	{
-		unsigned int * control = nullptr;
-		unsigned int size = 0;
-		unsigned int index = 1; // First swap point (size - 1, size)
+		unsigned long long * control = nullptr;
+		unsigned long long size = 0;
+		unsigned long long index = 1; // First swap point (size - 1, size)
 	};
 
-	unsigned int * generateCycle(unsigned int vertices, bool isRandom = true);
+	enum MoveType { Swap, Invert, Insert };
 
-	void showCycle(unsigned int * cycle, const unsigned int count);
+	unsigned long long * generateCycle(unsigned long long vertices, bool isRandom = true);
 
-	std::shared_ptr<PermutationSeed> getNewSeed(unsigned int count);
+	void showCycle(unsigned long long * cycle, const unsigned long long count);
+
+	std::shared_ptr<PermutationSeed> getNewSeed(unsigned long long count);
 
 	void freeSeed(std::shared_ptr<PermutationSeed> seed);
 	
-	void getNextPermutation(unsigned int * cycle, std::shared_ptr<PermutationSeed> seed);
+	void getNextPermutation(unsigned long long * cycle, std::shared_ptr<PermutationSeed> seed);
 
 	template<size_t N>
 	void inc(std::bitset<N> & set)
@@ -34,4 +39,22 @@ namespace Algorithm
 			set.reset(i);
 		}
 	}
+
+	Pair getRandom(std::mt19937_64 & engine, unsigned long long last, MoveType type);
+
+	void move(const Pair & pair, unsigned long long * cycle, MoveType type);
+
+	void moveSwap(const Pair & pair, unsigned long long * cycle);
+
+	void moveInvert(const Pair & pair, unsigned long long * cycle);
+
+	void moveInsert(const Pair & pair, unsigned long long * cycle);
+
+	void revertMove(const Pair & pair, unsigned long long * cycle, MoveType type);
+
+	void revertSwap(const Pair & pair, unsigned long long * cycle);
+
+	void revertInvert(const Pair & pair, unsigned long long * cycle);
+
+	void revertInsert(const Pair & pair, unsigned long long * cycle);
 }

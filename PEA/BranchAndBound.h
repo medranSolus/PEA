@@ -8,10 +8,10 @@ namespace Algorithm
 	{
 		BranchAndBound() {}
 
-		static bool isBetterMST(unsigned int current, int cost, int bestCost, std::vector<unsigned int> & path, std::shared_ptr<Graph> graph);
+		static bool isBetterMST(unsigned long long current, long long cost, long long bestCost, std::vector<unsigned long long> & path, std::shared_ptr<Graph> graph);
 
 	public:
-		static unsigned int * getMinimalCycle(std::shared_ptr<Graph> graph, bool depth = true);
-		static unsigned int * getMinimalCycleBS(std::shared_ptr<Graph> graph);
+		static unsigned long long * getMinimalCycle(std::shared_ptr<Graph> graph, bool depth = true);
+		static unsigned long long * getMinimalCycleBS(std::shared_ptr<Graph> graph);
 	};
 }

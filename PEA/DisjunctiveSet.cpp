@@ -16,7 +16,7 @@ void DisjunctiveSet::makeSet(long long vertex)
 	set[vertex].setRank(0);
 }
 
-void DisjunctiveSet::unionSets(unsigned int start, unsigned int end)
+void DisjunctiveSet::unionSets(unsigned long long start, unsigned long long end)
 {
 	long long first = findSet(start), last = findSet(end);
 	if (first != last)

@@ -2,14 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "Algorithm.h"
 
 class Graph
 {
 	std::string name;
-	unsigned int vertices = 0;
-	int ** matrix = nullptr;
-	unsigned int randomGenerateCount = 10;
-	unsigned int randomGenerateStart = 0;
+	unsigned long long vertices = 0;
+	long long ** matrix = nullptr;
+	unsigned long long randomGenerateCount = 10;
+	unsigned long long randomGenerateStart = 0;
 	bool symetric = true;
 
 	void init();
@@ -17,24 +18,28 @@ class Graph
 
 public:
 	Graph(std::ifstream & fin, const std::string & dataName = "none");
-	Graph(unsigned int vertexCount) : vertices(vertexCount) { init(); }
+	Graph(unsigned long long vertexCount) : vertices(vertexCount) { init(); }
 	~Graph() { reset(); }
 
-	inline unsigned int getRandomGenerateStart() const { return randomGenerateStart; }
-	inline unsigned int getRandomGenerateCount() const { return randomGenerateCount; }
-	constexpr inline unsigned int getSize() const { return vertices; }
-	constexpr inline int getCost(unsigned int start, unsigned int end) const { return matrix[start][end]; }
+	constexpr unsigned long long getRandomGenerateStart() const noexcept { return randomGenerateStart; }
+	constexpr unsigned long long getRandomGenerateCount() const noexcept { return randomGenerateCount; }
+	constexpr unsigned long long getSize() const noexcept { return vertices; }
+	constexpr long long getCost(unsigned long long start, unsigned long long end) const noexcept { return matrix[start][end]; }
 
-	inline void setRandomGenerateStart(unsigned int start) { randomGenerateStart = start; }
-	inline void setRandomGenerateCount(unsigned int count) { randomGenerateCount = count; }
-	inline void showCost(unsigned int * cycle) const { std::cout << "Cost: " << getCost(cycle) << std::endl; }
+	constexpr void setRandomGenerateStart(unsigned long long start) noexcept { randomGenerateStart = start; }
+	constexpr void setRandomGenerateCount(unsigned long long count) noexcept { randomGenerateCount = count; }
+	inline void showCost(unsigned long long * cycle) const noexcept { std::cout << "Cost: " << getCost(cycle) << std::endl; }
 
-	int getInitialCycle(unsigned int ** cycle) const;
-	int getUpperBound() const;
-	int getMST(const std::vector<unsigned int> & path) const;
-	int getShortests(unsigned int current) const;
-	void resetRandom(unsigned int vertexCount);
+	long long getInitialCycleNN(unsigned long long ** cycle) const;
+	long long getInitialCycleRandomNN(unsigned long long ** cycle) const;
+	long long getInitialCycleRandom(unsigned long long ** cycle, bool isNullptr = true) const;
+
+	long long getUpperBound() const;
+	long long getMST(const std::vector<unsigned long long> & path) const;
+	long long getShortests(unsigned long long current) const;
+	long long getCost(unsigned long long * cycle, const Algorithm::Pair & pair, Algorithm::MoveType moveType, bool firstCall = true) const noexcept;
+	void resetRandom(unsigned long long vertexCount);
 
 	void show() const;
-	int getCost(unsigned int * cycle) const;
+	long long getCost(unsigned long long * cycle) const;
 };

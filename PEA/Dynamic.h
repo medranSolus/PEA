@@ -11,6 +11,6 @@ namespace Algorithm
 		Dynamic() {}
 
 	public:
-		static unsigned int * getMinimalCycle(std::shared_ptr<Graph> graph);
+		static unsigned long long * getMinimalCycle(std::shared_ptr<Graph> graph);
 	};
 }
