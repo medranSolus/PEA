@@ -32,7 +32,7 @@ public:
 
 	long long getInitialCycleNN(unsigned long long ** cycle) const;
 	long long getInitialCycleRandomNN(unsigned long long ** cycle) const;
-	long long getInitialCycleRandom(unsigned long long ** cycle, bool isNullptr = true) const;
+	long long getInitialCycleRandom(unsigned long long ** cycle) const;
 
 	long long getUpperBound() const;
 	long long getMST(const std::vector<unsigned long long> & path) const;

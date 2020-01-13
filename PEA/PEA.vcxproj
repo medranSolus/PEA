@@ -174,11 +174,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Algorithm.h" />
+    <ClInclude Include="AntColony.h" />
     <ClInclude Include="BranchAndBound.h" />
     <ClInclude Include="BruteForce.h" />
     <ClInclude Include="DisjunctiveSet.h" />
     <ClInclude Include="Dynamic.h" />
     <ClInclude Include="FileService.h" />
+    <ClInclude Include="Genetic.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="pch.h" />
@@ -187,11 +189,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Algorithm.cpp" />
+    <ClCompile Include="AntColony.cpp" />
     <ClCompile Include="BranchAndBound.cpp" />
     <ClCompile Include="BruteForce.cpp" />
     <ClCompile Include="DisjunctiveSet.cpp" />
     <ClCompile Include="Dynamic.cpp" />
     <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="Genetic.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

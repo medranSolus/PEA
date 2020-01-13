@@ -8,9 +8,9 @@ namespace Algorithm
 	{
 		static constexpr size_t maxCities = (sizeof(size_t) << 3) + 1;
 
-		Dynamic() {}
-
 	public:
+		Dynamic() = delete;
+
 		static unsigned long long * getMinimalCycle(std::shared_ptr<Graph> graph);
 	};
 }

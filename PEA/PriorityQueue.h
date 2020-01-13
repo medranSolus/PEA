@@ -6,9 +6,10 @@
 ///<summary>
 /// Binary heap, type required to be tuple with compare value on position 1
 ///</summary>
-template<typename T, bool up = true>
+template<typename T, bool ascending = true>
 class PriorityQueue
 {
+	static T none;
 	size_t sizeStep;
 	size_t maxSize = sizeStep;
 	size_t count = 0;
@@ -31,25 +32,25 @@ class PriorityQueue
 		size_t child = 2 * index + 2;
 		if (child < count)
 		{
-			if (up && (std::get<1>(*data[index]) > std::get<1>(*data[child]) && std::get<1>(*data[child]) <= std::get<1>(*data[child - 1])) ||
-				!up && (std::get<1>(*data[index]) < std::get<1>(*data[child]) && std::get<1>(*data[child]) >= std::get<1>(*data[child - 1])))
+			if (ascending && (std::get<1>(*data[index]) > std::get<1>(*data[child]) && std::get<1>(*data[child]) <= std::get<1>(*data[child - 1])) ||
+				!ascending && (std::get<1>(*data[index]) < std::get<1>(*data[child]) && std::get<1>(*data[child]) >= std::get<1>(*data[child - 1])))
 			{
 				std::swap(data[index], data[child]);
 				return sortDown(child);
 			}
-			else if (up && (std::get<1>(*data[index]) > std::get<1>(*data[child - 1]) && std::get<1>(*data[child - 1]) <= std::get<1>(*data[child])) ||
-				!up && (std::get<1>(*data[index]) < std::get<1>(*data[child - 1]) && std::get<1>(*data[child - 1]) >= std::get<1>(*data[child])))
+			else if (ascending && (std::get<1>(*data[index]) > std::get<1>(*data[child - 1]) && std::get<1>(*data[child - 1]) <= std::get<1>(*data[child])) ||
+				!ascending && (std::get<1>(*data[index]) < std::get<1>(*data[child - 1]) && std::get<1>(*data[child - 1]) >= std::get<1>(*data[child])))
 			{
 				std::swap(data[index], data[--child]);
 				return sortDown(child);
 			}
 		}
-		else if (--child < count && (up && std::get<1>(*data[child]) < std::get<1>(*data[index]) ||!up && std::get<1>(*data[child]) > std::get<1>(*data[index])))
+		else if (--child < count && (ascending && std::get<1>(*data[child]) < std::get<1>(*data[index]) ||!ascending && std::get<1>(*data[child]) > std::get<1>(*data[index])))
 			std::swap(data[index], data[child]);
 	}
 
 public:
-	PriorityQueue(size_t size = 16) : sizeStep(size) {}
+	constexpr PriorityQueue(size_t size = 16) : sizeStep(size) {}
 	~PriorityQueue()
 	{
 		if (data)
@@ -61,7 +62,8 @@ public:
 		}
 	}
 
-	inline size_t size() const { return count; }
+	constexpr size_t size() const { return count; }
+	inline void sort() { sortDown(0); }
 	
 	void push(T && value)
 	{
@@ -98,7 +100,15 @@ public:
 			sortDown(0);
 			return value;
 		}
-		return T();
+		return none;
+	}	
+
+	T & operator[](size_t at)
+	{
+		if (at < count)
+			return *data[at];
+		return none;
 	}
-		
 };
+template<typename T, bool ascending>
+T PriorityQueue<T, ascending>::none = T();

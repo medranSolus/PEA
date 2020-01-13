@@ -2,6 +2,7 @@
 #include "FileService.h"
 #include <string>
 #include <fstream>
+#include <iomanip>
 
 std::shared_ptr<Graph> FileService::readGraph(const std::string & file)
 {
@@ -21,13 +22,18 @@ void FileService::saveData(const std::vector<std::vector<double>> & values, cons
 		std::cerr << "\n[ERROR] " << name;
 		return;
 	}
-	for (const auto & title : titles)
-		fout << title << '\t';
+	fout << titles.at(0);
+	for (size_t i = 1; i < titles.size(); ++i)
+		fout << " & " << titles.at(i);
 	for (const auto & instance : values)
 	{
-		fout << std::endl;
-		for (auto value : instance)
-			fout << value << '\t';
+		fout << std::endl << instance.at(0);
+		for (size_t i = 1; i < instance.size(); ++i)
+		{
+			fout << " & " << std::fixed << std::setprecision(2) << instance.at(i);
+			if (i > 3)
+				fout << '%';
+		}
 	}
 	fout.close();
 }

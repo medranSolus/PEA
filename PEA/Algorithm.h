@@ -42,6 +42,8 @@ namespace Algorithm
 
 	Pair getRandom(std::mt19937_64 & engine, unsigned long long last, MoveType type);
 
+	Pair getRandomAscending(std::mt19937_64 & engine, unsigned long long last);
+
 	void move(const Pair & pair, unsigned long long * cycle, MoveType type);
 
 	void moveSwap(const Pair & pair, unsigned long long * cycle);

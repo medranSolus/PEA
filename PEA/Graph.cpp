@@ -53,10 +53,14 @@ long long Graph::getInitialCycleNN(unsigned long long ** cycle) const
 {
 	long long cost = 0;
 	unsigned long long currentColumn = 0;
-	*cycle = new unsigned long long[vertices];
-	(*cycle)[0] = 0;
+	if (!*cycle)
+	{
+		*cycle = new unsigned long long[vertices];
+		(*cycle)[0] = 0;
+	}
 	unsigned long long i = 1;
 	std::unordered_set<unsigned long long> checked;
+	checked.emplace(0);
 	do
 	{
 		PriorityQueue<std::tuple<unsigned long long, long long>> toCheck(vertices);
@@ -65,10 +69,9 @@ long long Graph::getInitialCycleNN(unsigned long long ** cycle) const
 				toCheck.push(std::move(std::make_tuple(j, matrix[currentColumn][j])));
 		auto next = toCheck.top();
 		cost += std::get<1>(next);
-		currentColumn = std::get<0>(next);
-		(*cycle)[i++] = currentColumn;
+		(*cycle)[i] = currentColumn = std::get<0>(next);
 		checked.emplace(currentColumn);
-	} while (i < vertices);
+	} while (++i < vertices);
 	return cost + matrix[currentColumn][0];
 }
 
@@ -78,8 +81,11 @@ long long Graph::getInitialCycleRandomNN(unsigned long long ** cycle) const
 	const unsigned long long vertices_1 = vertices - 1;
 	const unsigned long long randomCount = std::uniform_int_distribution<unsigned long long>(1, vertices_1)(engine);
 	long long cost = 0;
-	*cycle = new unsigned long long[vertices];
-	(*cycle)[0] = 0;
+	if (!*cycle)
+	{
+		*cycle = new unsigned long long[vertices];
+		(*cycle)[0] = 0;
+	}
 	unsigned long long i = 1, v;
 	std::unordered_set<unsigned long long> checked;
 	do
@@ -107,11 +113,11 @@ long long Graph::getInitialCycleRandomNN(unsigned long long ** cycle) const
 	return cost + matrix[v][0];
 }
 
-long long Graph::getInitialCycleRandom(unsigned long long ** cycle, bool isNullptr) const
+long long Graph::getInitialCycleRandom(unsigned long long ** cycle) const
 {
 	const unsigned long long vertices_1 = vertices - 1;
 	long long cost = 0;
-	if (isNullptr)
+	if (!*cycle)
 	{
 		*cycle = new unsigned long long[vertices];
 		(*cycle)[0] = 0;
@@ -199,17 +205,12 @@ long long Graph::getCost(unsigned long long * cycle, const Algorithm::Pair & pai
 	{
 	case Algorithm::MoveType::Swap:
 	{
+		long long cost = matrix[cycle[pair.second - 1]][cycle[pair.second]] + matrix[cycle[pair.first - 1]][cycle[pair.first]];
 		if (pair.second - 1 == pair.first)
-			return matrix[cycle[pair.second - 2]][cycle[pair.second - 1]] +
-				matrix[cycle[pair.second - 1]][cycle[pair.second]] +
-				matrix[cycle[pair.second]][cycle[(pair.second + 1) % vertices]];
+			return cost + matrix[cycle[pair.second]][cycle[(pair.second + 1) % vertices]];
 		if (pair.first - 1 == pair.second)
-			return matrix[cycle[pair.first - 2]][cycle[pair.first - 1]] +
-				matrix[cycle[pair.first - 1]][cycle[pair.first]] +
-				matrix[cycle[pair.first]][cycle[(pair.first + 1) % vertices]];
-		return matrix[cycle[pair.first - 1]][cycle[pair.first]] +
-			matrix[cycle[pair.first]][cycle[(pair.first + 1) % vertices]] +
-			matrix[cycle[pair.second - 1]][cycle[pair.second]] +
+			return cost + matrix[cycle[pair.first]][cycle[(pair.first + 1) % vertices]];
+		return cost + matrix[cycle[pair.first]][cycle[(pair.first + 1) % vertices]] +
 			matrix[cycle[pair.second]][cycle[(pair.second + 1) % vertices]];
 	}
 	case Algorithm::MoveType::Insert:

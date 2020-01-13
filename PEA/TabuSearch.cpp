@@ -36,7 +36,7 @@ namespace Algorithm
 
 	void TabuSearch::makeMove(std::shared_ptr<Graph> graph, std::mt19937_64 & engine, MoveType moveType,
 		TabuMatrix & tabuList, TabuMatrix & frequency, unsigned long long * cycle, long long * cost,
-		long long bestCost, unsigned long long tabuTime, unsigned long long tabuRevokeTime)
+		long long bestCost, unsigned long long tabuTime, unsigned long long tabuRevokeTime, unsigned long long maxStagnationTime)
 	{
 		Pair pair;
 		long long dCostPrev = -1, dCostNext = -1;
@@ -49,7 +49,7 @@ namespace Algorithm
 			{
 				if (j == i)
 					continue;
-				if (!tabuList.at(i).at(j))
+				if (!tabuList.at(i).at(j) || time > maxStagnationTime)
 				{
 					pair = { i,j };
 					goto pairFound;
@@ -73,9 +73,7 @@ namespace Algorithm
 				}
 				++time;
 			}
-			i = (i + 1) % size_1;
-			if (!i)
-				i = 1;
+			i = (i + 1) % size_1 + 1;
 		} while (true);
 		pairFound:
 		dCostPrev = graph->getCost(cycle, pair, moveType);
@@ -89,7 +87,7 @@ namespace Algorithm
 
 	void TabuSearch::makeMoveRandom(std::shared_ptr<Graph> graph, std::mt19937_64 & engine, MoveType moveType,
 		TabuMatrix & tabuList, TabuMatrix & frequency, unsigned long long * cycle, long long * cost,
-		long long bestCost, unsigned long long tabuTime, unsigned long long tabuRevokeTime)
+		long long bestCost, unsigned long long tabuTime, unsigned long long tabuRevokeTime, unsigned long long maxStagnationTime)
 	{
 		Pair pair;
 		long long dCostPrev = -1, dCostNext = -1;
@@ -115,7 +113,7 @@ namespace Algorithm
 			}
 			pair = getRandom(engine, last, moveType);
 			++time;
-		} while (tabuList.at(pair.first).at(pair.second));
+		} while (tabuList.at(pair.first).at(pair.second) && time < maxStagnationTime);
 		dCostPrev = graph->getCost(cycle, pair, moveType);
 		move(pair, cycle, moveType);
 		if (dCostPrev == -1)
@@ -158,9 +156,9 @@ namespace Algorithm
 		for (unsigned long long stagnationTime = 0; time > 0; --time, ++stagnationTime)
 		{
 			if (random)
-				makeMoveRandom(graph, engine, moveType, tabuList, frequency, cycle, &cost, bestCost, tabuTime, tabuRevokeTime);
+				makeMoveRandom(graph, engine, moveType, tabuList, frequency, cycle, &cost, bestCost, tabuTime, tabuRevokeTime, maxStagnationTime);
 			else
-				makeMove(graph, engine, moveType, tabuList, frequency, cycle, &cost, bestCost, tabuTime, tabuRevokeTime);
+				makeMove(graph, engine, moveType, tabuList, frequency, cycle, &cost, bestCost, tabuTime, tabuRevokeTime, maxStagnationTime);
 			if (cost < bestCost)
 			{
 				stagnationTime = 0;

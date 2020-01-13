@@ -87,6 +87,17 @@ namespace Algorithm
 		return { i, j };
 	}
 
+	Pair getRandomAscending(std::mt19937_64 & engine, unsigned long long last)
+	{
+		unsigned long long temp = last / 2;
+		unsigned long long j, i = std::uniform_int_distribution<unsigned long long>(1, temp++)(engine);
+		do
+		{
+			j = std::uniform_int_distribution<unsigned long long>(temp, last)(engine);
+		} while (j <= i);
+		return { i, j };
+	}
+
 	void move(const Pair & pair, unsigned long long * cycle, MoveType type)
 	{
 		switch (type)
