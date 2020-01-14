@@ -151,11 +151,11 @@ namespace Algorithm
 		// https://www.hindawi.com/journals/cin/2017/7430125/
 
 		unsigned long long parentCount = chromosomeCount / 2 + (chromosomeCount / 2) % 2;
-		unsigned long long realPopSize = chromosomeCount + parentCount;
+		temp = chromosomeCount + parentCount;
 		size_1 = graph->getSize() - 1;
 
-		ChromosomeQueue chromosomes(realPopSize);
-		for (unsigned long long i = 0; i < realPopSize; ++i)
+		ChromosomeQueue chromosomes(temp);
+		for (unsigned long long i = 0; i < temp; ++i)
 		{
 			chromosomes.push(std::make_tuple(tempCycle, graph->getInitialCycleNN(&tempCycle)));
 			tempCycle = nullptr;
