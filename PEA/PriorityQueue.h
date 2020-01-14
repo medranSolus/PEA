@@ -20,7 +20,8 @@ class PriorityQueue
 		if (!index)
 			return;
 		const size_t parent = (index - 1) / 2;
-		if (std::get<1>(*data[parent]) > std::get<1>(*data[index]))
+		if (ascending && std::get<1>(*data[parent]) > std::get<1>(*data[index]) ||
+			!ascending && std::get<1>(*data[parent]) < std::get<1>(*data[index]))
 		{
 			std::swap(data[index], data[parent]);
 			return sortUp(parent);
@@ -45,7 +46,9 @@ class PriorityQueue
 				return sortDown(child);
 			}
 		}
-		else if (--child < count && (ascending && std::get<1>(*data[child]) < std::get<1>(*data[index]) ||!ascending && std::get<1>(*data[child]) > std::get<1>(*data[index])))
+		else if (--child < count &&
+			(ascending && std::get<1>(*data[child]) < std::get<1>(*data[index]) ||
+				!ascending && std::get<1>(*data[child]) > std::get<1>(*data[index])))
 			std::swap(data[index], data[child]);
 	}
 
@@ -63,7 +66,11 @@ public:
 	}
 
 	constexpr size_t size() const { return count; }
-	inline void sort() { sortDown(0); }
+	void sort()
+	{
+		for (long long i = (count - 2) / 2; i >= 0; --i)
+			sortDown(i);
+	}
 	
 	void push(T && value)
 	{

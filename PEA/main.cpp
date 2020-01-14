@@ -25,7 +25,7 @@ int main()
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 	shared_ptr<Graph> graph = FileService::readGraph(TEST_FILE + to_string(START_SIZE) + ".txt");
-	unsigned long long * cycle = Algorithm::Genetic::getMinimalCycle(graph, 1500, 15000, 0.1f, Algorithm::Genetic::CrossType::Order);
+	unsigned long long * cycle = Algorithm::Genetic::getMinimalCycle(graph, 500, 1000, 0.1f, Algorithm::Genetic::CrossType::Mapped);
 	Algorithm::showCycle(cycle, graph->getSize());
 	graph->showCost(cycle);
 	return 0;

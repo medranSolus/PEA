@@ -12,6 +12,7 @@ namespace Algorithm
 		typedef PriorityQueue<Chromosome> ChromosomeQueue;
 
 		static unsigned long long * tempCycle;
+		static unsigned long long temp;
 		static unsigned long long size_1;
 
 		static void mutate(std::shared_ptr<Graph> graph, float mutationChance, Chromosome & t, std::mt19937_64 & eng);

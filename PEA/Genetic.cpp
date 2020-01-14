@@ -7,6 +7,7 @@
 namespace Algorithm
 {
 	unsigned long long Genetic::size_1 = 0;
+	unsigned long long Genetic::temp = 0;
 	unsigned long long * Genetic::tempCycle = nullptr;
 
 	void Genetic::mutate(std::shared_ptr<Graph> graph, float mutationChance, Chromosome & t, std::mt19937_64 & eng)
@@ -29,7 +30,10 @@ namespace Algorithm
 		tempCycle = std::get<0>(t1);
 		std::get<0>(t1) = std::get<0>(t2);
 		std::get<0>(t2) = tempCycle;
+		tempCycle = nullptr;
+		temp = std::get<1>(t2);
 		std::get<1>(t2) = std::get<1>(t1);
+		std::get<1>(t1) = temp;
 	}
 
 	void Genetic::crossPartiallyMapped(std::shared_ptr<Graph> graph, unsigned long long * parent1, unsigned long long * parent2,
@@ -146,64 +150,52 @@ namespace Algorithm
 	{
 		// https://www.hindawi.com/journals/cin/2017/7430125/
 
-		bool isEven = (chromosomeCount / 2) % 2;
+		unsigned long long parentCount = chromosomeCount / 2 + (chromosomeCount / 2) % 2;
+		unsigned long long realPopSize = chromosomeCount + parentCount;
 		size_1 = graph->getSize() - 1;
-		std::shared_ptr<ChromosomeQueue> tempSwap = nullptr;
-		std::tuple<std::shared_ptr<ChromosomeQueue>, std::shared_ptr<ChromosomeQueue>> chromosomes =
-			std::make_tuple(std::make_shared<ChromosomeQueue>(chromosomeCount), std::make_shared<ChromosomeQueue>(chromosomeCount));
-		std::mt19937_64 engine(std::random_device{}());
-		std::vector<unsigned long long> parentMatches(chromosomeCount / 2 - isEven);
-		unsigned long long temp = 0;
-		std::generate(parentMatches.begin(), parentMatches.end(), [&temp](){ return temp++; });
 
-		for (unsigned long long i = 0; i < chromosomeCount; ++i)
+		ChromosomeQueue chromosomes(realPopSize);
+		for (unsigned long long i = 0; i < realPopSize; ++i)
 		{
-			graph->getInitialCycleRandom(&tempCycle);
-			std::get<0>(chromosomes)->push(std::make_tuple(tempCycle, graph->getCost(tempCycle)));
-			tempCycle = new unsigned long long[graph->getSize()];
-			tempCycle[0] = 0;
-			std::get<1>(chromosomes)->push(std::make_tuple(tempCycle, 0));
+			chromosomes.push(std::make_tuple(tempCycle, graph->getInitialCycleNN(&tempCycle)));
+			tempCycle = nullptr;
 		}
 
+		std::mt19937_64 engine(std::random_device{}());
+		std::vector<bool> isParent(chromosomeCount, false);
+		unsigned long long parentId1, parentId2;
 		do
 		{
-			std::shuffle(parentMatches.begin(), parentMatches.end(), engine);
-			for (unsigned long long i = 0, j = parentMatches.size(); i < parentMatches.size(); i += 2, j += 2)
+			for (unsigned long long i = 0; i < parentCount; i += 2)
 			{
-				auto & parent1 = (*std::get<0>(chromosomes))[parentMatches.at(i)];
-				auto & parent2 = (*std::get<0>(chromosomes))[parentMatches.at(i + 1)];
-				auto & parentNew1 = (*std::get<1>(chromosomes))[i];
-				auto & parentNew2 = (*std::get<1>(chromosomes))[i + 1];
-				swap(parent1, parentNew1);
-				swap(parent2, parentNew2);
+				do
+				{
+					parentId1 = std::uniform_int_distribution<unsigned long long>(0, static_cast<unsigned long long>(chromosomeCount - 1))(engine);
+				} while (isParent.at(parentId1));
+				isParent.at(parentId1) = true;
+				do
+				{
+					parentId2 = std::uniform_int_distribution<unsigned long long>(0, static_cast<unsigned long long>(chromosomeCount - 1))(engine);
+				} while (isParent.at(parentId2));
+				isParent.at(parentId2) = true;
+				Chromosome & parent1 = chromosomes[parentId1];
+				Chromosome & parent2 = chromosomes[parentId2];
 				switch (crossType)
 				{
 				case Algorithm::Genetic::Mapped:
-					crossPartiallyMapped(graph, std::get<0>(parentNew1), std::get<0>(parentNew2), (*std::get<1>(chromosomes))[j], (*std::get<1>(chromosomes))[j + 1], engine);
+					crossPartiallyMapped(graph, std::get<0>(parent1), std::get<0>(parent2), chromosomes[chromosomeCount + i], chromosomes[chromosomeCount + i + 1], engine);
 					break;
 				case Algorithm::Genetic::Order:
-					crossOrder(graph, std::get<0>(parentNew1), std::get<0>(parentNew2), (*std::get<1>(chromosomes))[j], (*std::get<1>(chromosomes))[j + 1], engine);
+					crossOrder(graph, std::get<0>(parent1), std::get<0>(parent2), chromosomes[chromosomeCount + i], chromosomes[chromosomeCount + i + 1], engine);
 					break;
 				}
-				mutate(graph, mutationChance, (*std::get<1>(chromosomes))[j], engine);
-				mutate(graph, mutationChance, (*std::get<1>(chromosomes))[j + 1], engine);
+				mutate(graph, mutationChance, chromosomes[chromosomeCount + i], engine);
+				mutate(graph, mutationChance, chromosomes[chromosomeCount + i + 1], engine);
 			}
-			if (isEven)
-			{
-				graph->getInitialCycleRandom(&tempCycle);
-				std::get<0>((*std::get<1>(chromosomes))[chromosomeCount - 1]) = tempCycle;
-				std::get<1>((*std::get<1>(chromosomes))[chromosomeCount - 1]) = graph->getCost(tempCycle);
-			}
-			std::get<1>(chromosomes)->sort();
-			tempSwap = std::get<1>(chromosomes);
-			std::get<1>(chromosomes) = std::get<0>(chromosomes);
-			std::get<0>(chromosomes) = tempSwap;
-		} while (maxTime--);/*
-		for (unsigned long long i = 0; i < chromosomeCount; ++i)
-			std::cout << "\n" << std::get<1>((*std::get<0>(chromosomes))[i]);*/
-		delete[] tempCycle;
-		tempCycle = nullptr;
-		std::get<0>(chromosomes)->sort();
-		return std::get<0>((*std::get<0>(chromosomes))[0]);
+			chromosomes.sort();
+			std::fill(isParent.begin(), isParent.end(), false);
+		} while (maxTime--);
+		chromosomes.sort();
+		return std::get<0>(chromosomes[0]);
 	}
 }
