@@ -1,4 +1,4 @@
-# PEA
+# Programowanie Efektywnych Algorytmów
 
 Program solving Traveling Salesman Problem from different approaches:
 - **Precise algorithms:**
@@ -12,4 +12,4 @@ Program solving Traveling Salesman Problem from different approaches:
   - Ant Colony Optimization
   - Genetic Algorithm
 
-IDE: Visual Studio 2017
+**IDE:** Visual Studio 2017
