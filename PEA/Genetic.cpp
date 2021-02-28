@@ -157,7 +157,7 @@ namespace Algorithm
 		ChromosomeQueue chromosomes(temp);
 		for (unsigned long long i = 0; i < temp; ++i)
 		{
-			chromosomes.push(std::make_tuple(tempCycle, graph->getInitialCycleNN(&tempCycle)));
+			chromosomes.push(std::make_tuple(tempCycle, graph->getInitialCycleRandom(&tempCycle)));
 			tempCycle = nullptr;
 		}
 

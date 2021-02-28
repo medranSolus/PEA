@@ -29,11 +29,7 @@ void FileService::saveData(const std::vector<std::vector<double>> & values, cons
 	{
 		fout << std::endl << instance.at(0);
 		for (size_t i = 1; i < instance.size(); ++i)
-		{
 			fout << " & " << std::fixed << std::setprecision(2) << instance.at(i);
-			if (i > 3)
-				fout << '%';
-		}
 	}
 	fout.close();
 }

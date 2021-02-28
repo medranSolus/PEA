@@ -119,7 +119,7 @@ long long Graph::getInitialCycleRandom(unsigned long long ** cycle) const
 	long long cost = 0;
 	if (!*cycle)
 	{
-		*cycle = new unsigned long long[vertices];
+		(*cycle) = new unsigned long long[vertices];
 		(*cycle)[0] = 0;
 	}
 	unsigned long long i = 1, v;
@@ -131,8 +131,10 @@ long long Graph::getInitialCycleRandom(unsigned long long ** cycle) const
 		if (checked.find(v) == checked.end())
 		{
 			checked.emplace(v);
+			//Algorithm::showCycle(*cycle, vertices);
 			cost += matrix[(*cycle)[i - 1]][v];
-			(*cycle)[i++] = v;
+			(*cycle)[i] = v;
+			++i;
 		}
 	} while (i < vertices);
 	return cost + matrix[v][0];
