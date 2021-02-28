@@ -1,6 +1,6 @@
 # Programowanie Efektywnych Algorytmów
 
-Program solving Traveling Salesman Problem from different approaches:
+Program for university course of Effective Algorithm Programming, solving Traveling Salesman Problem from different approaches:
 - **Precise algorithms:**
   - Brute Force
   - Dynamic Programming
